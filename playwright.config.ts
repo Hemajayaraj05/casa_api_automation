@@ -1,8 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './tests',
+  timeout: 60000,
   use: {
-    baseURL: 'https://your-api-base-url.com',
-  },
+    baseURL: process.env.BASE_URL,
+    extraHTTPHeaders: {
+      'content-type': 'application/json'
+    }
+  }
 });
