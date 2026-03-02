@@ -1,22 +1,22 @@
 import { faker } from "@faker-js/faker";
 import { getCurrentISOString } from "../../utils/leads/date.util";
 
-export const buildWalkInPayload = () => {
+export const buildWalkInPayload = (buId: number) => {
   const now=getCurrentISOString();
-  const mobile = faker.string.numeric(10);
+ const mobile = `9${faker.string.numeric(9)}`;
 
   return {
     walkInInterest: {
       createdDate: now,
       updatedDate: now,
       date: now,
-      storeName: "ATE",
-      source: "Facebook",
+      storeName: "DBR",
+      source: "Intelliclose",
       subSource: "Campaign 123",
-      storeUserEmail: "abc@gmail.com",
+      storeUserEmail: "fashionfolks@gmail.com",
       products: [
         {
-          productSku: "ASB-A",
+          productSku: "001iphone",
         },
       ],
     },

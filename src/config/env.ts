@@ -1,16 +1,18 @@
 import dotenv from "dotenv";
+dotenv.config();
 
+type Environment = "qa" | "prod";
 
-const envFile = process.env.ENV === "prod" ? ".env.prod" : ".env.qa";
-dotenv.config({ path: envFile });
+export const ENV: Environment = (process.env.TEST_ENV as Environment) || "qa";
 
-export const config = {
-  db: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASSWORD!,
-    database: process.env.DB_NAME!,
+const configs: Record<Environment, { baseURL: string }> = {
+  qa: {
+    baseURL: "https://api.casaqa.ajira.tech",
   },
-  baseUrl: process.env.BASE_URL!,
+  prod: {
+    baseURL: "https://api.casa.ajira.tech",
+  },
 };
+
+export const currentEnv = configs[ENV];
+
