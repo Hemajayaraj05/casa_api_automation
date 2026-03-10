@@ -1,9 +1,19 @@
 import { faker } from "@faker-js/faker";
 import { getCurrentISOString } from "../../utils/leads/date.util";
 
-export const buildWalkInPayload = (buId: number) => {
-  const now=getCurrentISOString();
- const mobile = `9${faker.string.numeric(9)}`;
+type WalkInOverrides = {
+  mobile?: string;
+  productSku?: string;
+};
+
+export const buildWalkInPayload = (
+  buId: number,
+  overrides?: WalkInOverrides
+) => {
+  const now = getCurrentISOString();
+  const generatedMobile = `9${faker.string.numeric(9)}`;
+
+  const mobile = overrides?.mobile ?? generatedMobile;
 
   return {
     walkInInterest: {
@@ -16,7 +26,7 @@ export const buildWalkInPayload = (buId: number) => {
       storeUserEmail: "fashionfolks@gmail.com",
       products: [
         {
-          productSku: "001iphone",
+          productSku: overrides?.productSku ?? "001iphone",
         },
       ],
     },

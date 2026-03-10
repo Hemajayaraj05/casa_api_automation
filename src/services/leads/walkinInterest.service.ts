@@ -1,5 +1,5 @@
 import { APIRequestContext } from "@playwright/test";
-import { ENDPOINTS } from "../../constants/leads/walkinInterest.endpoints";
+import {LEAD_CREATION_ENDPOINT } from "../../constants/leads/walkinInterest.endpoints";
 
 export class WalkInService {
   constructor(private request: APIRequestContext) {}
@@ -11,7 +11,7 @@ export class WalkInService {
     payload: any
   ) {
     return await this.request.post(
-      ENDPOINTS.save_walkin(buId),
+      LEAD_CREATION_ENDPOINT.save_walkin(buId),
       {
         headers: {
           "content-type": "application/json",
@@ -23,3 +23,5 @@ export class WalkInService {
     );
   }
 }
+
+

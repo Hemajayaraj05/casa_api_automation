@@ -5,12 +5,14 @@ type Environment = "qa" | "prod";
 
 export const ENV: Environment = (process.env.TEST_ENV as Environment) || "qa";
 
-const configs: Record<Environment, { baseURL: string }> = {
+const configs: Record<Environment, { creationBaseURL: string; listingBaseURL: string }> = {
   qa: {
-    baseURL: "https://api.casaqa.ajira.tech",
+    listingBaseURL: "https://api.customerstudioqa.ajira.tech",
+    creationBaseURL: "https://api.casaqa.ajira.tech",
   },
   prod: {
-    baseURL: "https://api.casa.ajira.tech",
+       creationBaseURL: "https://walkin.casa.ajira.tech",
+    listingBaseURL: "https://api.casa.ajira.tech",
   },
 };
 
