@@ -37,6 +37,7 @@ export async function verifyLeadInTodayFollowUp(
 
       if (status !== 200) {
         console.log("Listing API failed:", status);
+        
         console.log(await response.text());
       }
 
