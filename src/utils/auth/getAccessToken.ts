@@ -21,7 +21,7 @@ export async function getAccessToken() {
 
   const body = await response.json();
 
-  console.log("Token Response:", body);   // 👈 add this
+  console.log("Token Response:", body);  
   console.log("Token Status:", response.status());
 
   return body.access_token;

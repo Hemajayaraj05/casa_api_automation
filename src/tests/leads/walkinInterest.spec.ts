@@ -43,31 +43,31 @@ test("Create Walk-In Lead", async ({ creationApiContext, listingApiContext }) =>
 
 });
 
-// test("Should merge duplicate lead with same product", async ({ creationApiContext, listingApiContext }) => {
-// //  const accessToken = await getAccessToken();
-//   const service = new WalkInService(creationApiContext);
-//    const mobile = generateMobile();
-//   console.log("Lead creation -", mobile);
-//   const response= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
-//   const response2= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
-//   expect(response2.status()).toBe(200);
-//    await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile);
-// });
+test("Should merge duplicate lead with same product", async ({ creationApiContext, listingApiContext }) => {
+//  const accessToken = await getAccessToken();
+  const service = new WalkInService(creationApiContext);
+   const mobile = generateMobile();
+  console.log("Lead creation -", mobile);
+  const response= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+  const response2= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+  expect(response2.status()).toBe(200);
+   await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile);
+});
 
 
-// test("Should not merge If lead created with different product for the same number",async({creationApiContext, listingApiContext})=>{
+test("Should not merge If lead created with different product for the same number",async({creationApiContext, listingApiContext})=>{
   
-//   const service=new WalkInService(creationApiContext);
-//  const mobile = generateMobile();
-//   console.log("Lead creation -", mobile);
-//   const response = await createLead(service,Number(buId),tenantId,tenantToken,mobile);
-//   expect(response.status()).toBe(200);
-//   const productSku="007iphone";
-//  const responseWithDiffProduct = await createLead(service,Number(buId),tenantId,tenantToken,mobile,productSku);
+  const service=new WalkInService(creationApiContext);
+ const mobile = generateMobile();
+  console.log("Lead creation -", mobile);
+  const response = await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+  expect(response.status()).toBe(200);
+  const productSku="007iphone";
+ const responseWithDiffProduct = await createLead(service,Number(buId),tenantId,tenantToken,mobile,productSku);
 
-//  await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile,undefined,2);
+ await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile,undefined,2);
 
-// });
+});
 
 
 

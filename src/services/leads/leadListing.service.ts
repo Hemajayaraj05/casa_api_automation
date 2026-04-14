@@ -5,7 +5,7 @@ import { getAccessToken } from "../../utils/auth/getAccessToken";
 
 export class LeadListingService {
 
-  constructor(private request: APIRequestContext) {}
+  constructor(private request: APIRequestContext   ) {}
 
   async getTodayFollowups(
     buId: number,
@@ -14,8 +14,8 @@ export class LeadListingService {
     page: number = 1,
    limit: number = 20
   ) {
-      const token=await getAccessToken();
-      console.log(token)
+   
+      
      const url = `${LEAD_LISTING_ENDPOINT.list_lead(buId)}`;
     return await this.request.post(url,
       {
@@ -24,7 +24,7 @@ export class LeadListingService {
           "x-bu-id": buId.toString(),
           "x-tenant-id": tenantId,
           "x-tenant-token": tenantToken,
-          "Authorization":`Bearer ${token}`
+          "Authorization": `Bearer ${process.env.ACCESS_TOKEN}`
 
         },
             data: {
