@@ -1,5 +1,6 @@
 import { test as base, APIRequestContext } from "@playwright/test";
 import { currentEnv } from "../../config/env";
+import { getAccessToken } from "../../utils/auth/getAccessToken";
 
 type MyFixtures = {
   creationApiContext: APIRequestContext;
@@ -7,8 +8,9 @@ type MyFixtures = {
 };
 
 export const test = base.extend<MyFixtures>({
-  
+
   creationApiContext: async ({ playwright }, use) => {
+
     const context = await playwright.request.newContext({
       baseURL: currentEnv.creationBaseURL,
     });
@@ -18,8 +20,14 @@ export const test = base.extend<MyFixtures>({
   },
 
   listingApiContext: async ({ playwright }, use) => {
+
+    const token = await getAccessToken();
+
     const context = await playwright.request.newContext({
       baseURL: currentEnv.listingBaseURL,
+      extraHTTPHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     await use(context);

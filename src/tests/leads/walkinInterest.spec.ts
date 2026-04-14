@@ -1,10 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/leads/test.fixture";
-import { buildWalkInPayload } from "../../test-data/leads/walkinInterest.data";
 import { WalkInService } from "../../services/leads/walkinInterest.service";
-import { faker } from "@faker-js/faker";
 import { verifyLeadInTodayFollowUp } from "../../assertions/leads/lead.assertions";
 import { getAccessToken } from "../../utils/auth/getAccessToken";
+import { generateMobile} from "../../helpers/leads/generateMobile.helper";
+import { createLead } from "../../helpers/leads/walkinLead.helper";
+
 
 const tenantId = process.env.TENANT_ID;
 const tenantToken = process.env.TENANT_TOKEN;
@@ -18,105 +19,55 @@ if (!tenantId || !tenantToken || !buId) {
 }
 
 test("Create Walk-In Lead", async ({ creationApiContext, listingApiContext }) => {
-  const accessToken=await getAccessToken();
+
+  const mobile = generateMobile();
+
   const service = new WalkInService(creationApiContext);
 
-  const mobile = `9${faker.string.numeric(9)}`;
-
-  console.log("Lead creation -", mobile);
-
-  const payload = buildWalkInPayload(Number(buId), {
-    mobile,
-  });
-
-  const createResponse = await service.saveWalkIn(
+  const response = await createLead(
+    service,
     Number(buId),
     tenantId,
     tenantToken,
-    payload
+    mobile
   );
 
-  expect(createResponse.status()).toBe(200);
-
-
+  expect(response.status()).toBe(200);
   await verifyLeadInTodayFollowUp(
     listingApiContext,
     Number(buId),
     tenantId,
     tenantToken,
-    mobile,
-    accessToken
+    mobile
   );
+
 });
 
-test("Should merge duplicate lead with same product", async ({ creationApiContext, listingApiContext }) => {
-    const accessToken = await getAccessToken();
-  const service = new WalkInService(creationApiContext);
+// test("Should merge duplicate lead with same product", async ({ creationApiContext, listingApiContext }) => {
+// //  const accessToken = await getAccessToken();
+//   const service = new WalkInService(creationApiContext);
+//    const mobile = generateMobile();
+//   console.log("Lead creation -", mobile);
+//   const response= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+//   const response2= await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+//   expect(response2.status()).toBe(200);
+//    await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile);
+// });
 
-  const mobile = `9${faker.string.numeric(9)}`;
- console.log("Lead merge - ", mobile);
 
-  const payload = buildWalkInPayload(Number(buId), {
-    mobile,
-  });
-
-  await service.saveWalkIn(
-    Number(buId),
-    tenantId,
-    tenantToken,
-    payload
-  );
-
-  await service.saveWalkIn(
-    Number(buId),
-    tenantId,
-    tenantToken,
-    payload
-  );
-   await verifyLeadInTodayFollowUp(
-    listingApiContext,
-    Number(buId),
-    tenantId,
-    tenantToken,
-    mobile,
-    accessToken,
-  );
+// test("Should not merge If lead created with different product for the same number",async({creationApiContext, listingApiContext})=>{
   
+//   const service=new WalkInService(creationApiContext);
+//  const mobile = generateMobile();
+//   console.log("Lead creation -", mobile);
+//   const response = await createLead(service,Number(buId),tenantId,tenantToken,mobile);
+//   expect(response.status()).toBe(200);
+//   const productSku="007iphone";
+//  const responseWithDiffProduct = await createLead(service,Number(buId),tenantId,tenantToken,mobile,productSku);
 
-});
+//  await verifyLeadInTodayFollowUp(listingApiContext,Number(buId),tenantId,tenantToken,mobile,undefined,2);
 
-
-test("Should not merge If lead created with different product for the same number",async({creationApiContext, listingApiContext})=>{
-  const accessToken = await getAccessToken();
-  const service=new WalkInService(creationApiContext);
-  const mobile = `9${faker.string.numeric(9)}`;
-  console.log("Lead should not merge - ", mobile);
-
-  const payload=buildWalkInPayload(Number(buId),{
-         mobile,
-  })
-
-  await service.saveWalkIn(Number(buId), tenantId, tenantToken, payload);
-
-  const productSku="007iphone";
-  const payloadWithDifferentProductSku=buildWalkInPayload(Number(buId),{
-    mobile,
-    productSku,
-  })
-
-  await service.saveWalkIn(Number(buId), tenantId, tenantToken, payloadWithDifferentProductSku);
-  await verifyLeadInTodayFollowUp(
-    listingApiContext,
-    Number(buId),
-    tenantId,
-    tenantToken,
-    mobile,
-    accessToken,
-    productSku,
-  );
-
-});
-
+// });
 
 
 

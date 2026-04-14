@@ -1,4 +1,3 @@
-
 import { expect, APIRequestContext } from "@playwright/test";
 import { LeadListingService } from "../../services/leads/leadListing.service";
 
@@ -8,49 +7,50 @@ export async function verifyLeadInTodayFollowUp(
   tenantId: string,
   tenantToken: string,
   mobile: string,
-  accessToken: string,
-  sku?: string
+  sku?: string,
+  expectedCount: number = 1
 ) {
-
   const listingService = new LeadListingService(apiContext);
 
   const limit = 20;
-  const maxRetries = 6;
-  let lead: any = null;
+  const maxRetries = 5;
 
-  for (let retry = 0; retry < maxRetries && !lead; retry++) {
+  for (let retry = 0; retry < maxRetries; retry++) {
 
-    let page=1;
+    let page = 1;
+    let matchedLeads: any[] = [];
 
-    while (!lead) {
+    while (true) {
 
       const response = await listingService.getTodayFollowups(
         buId,
         tenantId,
         tenantToken,
-        accessToken,
         page,
         limit
       );
 
-      const status = response.status();
-
-      if (status !== 200) {
-        console.log("Listing API failed:", status);
-        
-        console.log(await response.text());
-      }
-
-      expect(status).toBe(200);
+      expect(response.status()).toBe(200);
 
       const body = await response.json();
+      console.log(JSON.stringify(body, null, 2));
 
-      const leads = body.todayFollowUp || body.data || [];
-      //console.log(JSON.stringify(leads[0], null, 2));
+      const leads = [
+        ...(body.todayFollowUp ?? []),
+        ...(body.missedFollowUp ?? []),
+        ...(body.lead ?? []),
+        ...(body.data?.todayFollowUp ?? []),
+      ];
+
+      console.log({
+        today: body.todayFollowUp?.length,
+        missed: body.missedFollowUp?.length,
+        lead: body.lead?.length
+      });
 
       console.log(`Retry ${retry} | page ${page} | leads: ${leads.length}`);
 
-      lead = leads.find((l: any) => {
+      const filtered = leads.filter((l: any) => {
 
         const mobileMatch =
           l.customer_mobile === mobile ||
@@ -61,41 +61,35 @@ export async function verifyLeadInTodayFollowUp(
 
         if (!sku) return true;
 
-        const skuMatch =
+        return (
           l.productDetails?.sku === sku ||
           l.product?.sku === sku ||
-          l.products?.some((p: any) => p.sku === sku);
-
-        return skuMatch;
+          l.products?.some((p: any) => p.sku === sku)
+        );
       });
 
-      if (lead) break;
+      matchedLeads.push(...filtered);
 
       if (leads.length < limit) break;
 
-page++;
+      page++;
     }
 
-    if (!lead) {
-      console.log("Lead not found yet. Waiting before retry...");
-      await new Promise((r) => setTimeout(r, 3000));
+    console.log("Matched leads count:", matchedLeads.length);
+
+    if (matchedLeads.length === expectedCount) {
+      console.log(
+        `Lead verification successful. Mobile: ${mobile}, Count: ${matchedLeads.length}`
+      );
+      return matchedLeads;
     }
+
+    console.log("Expected:", expectedCount, "Found:", matchedLeads.length);
+    console.log("Waiting before retry...");
+    await new Promise((r) => setTimeout(r, 4000));
   }
 
-  expect(lead).toBeTruthy();
-
-  if (sku) {
-
-    const returnedSku =
-      lead.productDetails?.sku ||
-      lead.product?.sku ||
-      lead.products?.[0]?.sku;
-
-    expect(returnedSku).toBe(sku);
-  }
-
-  console.log("Lead verified successfully:", mobile);
-
-  return lead;
+  throw new Error(
+    `Expected ${expectedCount} leads for mobile ${mobile} and sku ${sku}, but condition not met`
+  );
 }
-

@@ -19,6 +19,7 @@ export const buildWalkInPayload = (
     walkInInterest: {
       createdDate: now,
       updatedDate: now,
+      followUpDate: now,
       date: now,
       storeName: "DBR",
       source: "Intelliclose",

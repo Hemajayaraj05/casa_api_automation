@@ -1,5 +1,7 @@
 import { APIRequestContext } from "@playwright/test";
 import { LEAD_LISTING_ENDPOINT } from "../../constants/leads/walkinInterest.endpoints";
+import { getAccessToken } from "../../utils/auth/getAccessToken";
+
 
 export class LeadListingService {
 
@@ -9,26 +11,30 @@ export class LeadListingService {
     buId: number,
     tenantId: string,
     tenantToken: string,
-    accessToken: string,
     page: number = 1,
-  limit: number = 20
+   limit: number = 20
   ) {
-
-    return await this.request.post(
-      LEAD_LISTING_ENDPOINT.list_lead(buId),
+      const token=await getAccessToken();
+      console.log(token)
+     const url = `${LEAD_LISTING_ENDPOINT.list_lead(buId)}`;
+    return await this.request.post(url,
       {
         headers: {
           "content-type": "application/json",
           "x-bu-id": buId.toString(),
           "x-tenant-id": tenantId,
           "x-tenant-token": tenantToken,
-          "authorization": `Bearer ${accessToken}`,
+          "Authorization":`Bearer ${token}`
+
         },
-        data: {
-         lane: "todayFollowUp",
-            page: page,
-           limit:limit,
-        },
+            data: {
+        lane: "todayFollowUp",
+        offset: (page - 1) * limit,
+        limit: limit,
+        age: "ALL",
+        search: "",
+        sort: "updatedDate,desc"
+      },
       }
     );
   }
