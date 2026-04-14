@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/leads/test.fixture";
 import { WalkInService } from "../../services/leads/walkinInterest.service";
 import { verifyLeadInTodayFollowUp } from "../../assertions/leads/lead.assertions";
-import { getAccessToken } from "../../utils/auth/getAccessToken";
+import { getAccessToken } from "../../auth/getAccessToken";
 import { generateMobile} from "../../helpers/leads/generateMobile.helper";
 import { createLead } from "../../helpers/leads/walkinLead.helper";
 

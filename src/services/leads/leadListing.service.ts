@@ -1,6 +1,6 @@
 import { APIRequestContext } from "@playwright/test";
 import { LEAD_LISTING_ENDPOINT } from "../../constants/leads/walkinInterest.endpoints";
-import { getAccessToken } from "../../utils/auth/getAccessToken";
+import { getAccessToken } from "../../auth/getAccessToken";
 
 
 export class LeadListingService {

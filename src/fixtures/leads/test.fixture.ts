@@ -1,6 +1,6 @@
 import { test as base, APIRequestContext } from "@playwright/test";
 import { currentEnv } from "../../config/env";
-import { getAccessToken } from "../../utils/auth/getAccessToken";
+import { getAccessToken } from "../../auth/getAccessToken";
 
 type MyFixtures = {
   creationApiContext: APIRequestContext;

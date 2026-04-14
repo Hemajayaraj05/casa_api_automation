@@ -1,5 +1,5 @@
 import { test as base } from "@playwright/test";
-import { getAccessToken } from "../../utils/auth/getAccessToken";
+import { getAccessToken } from "../../auth/getAccessToken";
 
 type AuthFixture = {
   accessToken: string;
