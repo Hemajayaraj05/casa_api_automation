@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { getCurrentISOString } from "../../utils/leads/date.util";
+import { getCurrentISOString } from "../../utils/date.util";
+
 
 type WalkInOverrides = {
   mobile?: string;
